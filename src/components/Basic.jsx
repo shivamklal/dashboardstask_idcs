@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import {Pie} from 'react-chartjs-2';
+import testdata from './testdata.txt';
 
 class Basic extends Component{
 
     constructor(props) {
         super(props);
-        this.readData();
         this.state = {
             labels: ['Group A', 'Group B', 'Group C'],
             datasets: [{
@@ -13,6 +13,11 @@ class Basic extends Component{
                 backgroundColor: ['red', 'blue', 'green']
             }]
         }
+    }
+
+    componentWillMount() {
+        this.readData = this.readData.bind(this);
+        this.readData(testdata);
     }
 
     render() {
@@ -30,21 +35,24 @@ class Basic extends Component{
         );
     }
 
-    readData() {
+    readData = file => {
         console.log('reading data...')
-        // found this on stackoverflow from someone else that was using react
-        /*fetch('/testdata.txt')
-            .then((r) => r.text())
-            .then(text => {
-                console.log(text);
-            })*/
+        console.log(testdata) // only outputs file name
 
-        // node has this fs library but it won't work??
-        /*const fs = require('fs')
-        fs.readFile('testdata.txt', (err, data) => {
-            if (err) throw err;
-            console.log(data.toString());
-        })*/
+        var rawFile = new XMLHttpRequest();
+        rawFile.open("GET", file, false);
+        rawFile.onreadystatechange = () => {
+            if(rawFile.readyState === 4) {
+                if(rawFile.status === 200 || rawFile.status === 0) {
+                    var allText = rawFile.responseText;
+                    console.log(allText);
+                    this.setState({
+                        sampleData: allText
+                    });
+                }
+            }
+        };
+        rawFile.send(null);
     }
 }
 
