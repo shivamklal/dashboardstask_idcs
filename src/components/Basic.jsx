@@ -51,30 +51,56 @@ class Basic extends Component{
                         this.setState({
                             allDataArray: this.state.sampleData.split("\n")
                         }, function () {
-                            console.log(this.state.allDataArray);
                             // get unique group names
                             let labelIndex = 0 // manages index of array of unique group names, incremented only when a new name is found
                             let uniqueGroup = ""
                             let currentGroup = ""
+                            //let uniqueUser = ""
+                            //let currentUser = ""
+                            let allGroups = ["", "", ""]
+                            let allUsers = [0, 0, 0]
+                            let userCount = 0
+                            let datasetupdate = [{
+                                data: [23, 36, 15],
+                                backgroundColor: ['red', 'blue', 'green']
+                            }]
                             for(let i = 0; i < this.state.allDataArray.length; i++){
                                 // find the first group name
-                                let endInd = this.state.allDataArray[i].indexOf(",") // position of comma to get position of end of group name
-                                currentGroup = this.state.allDataArray[i].slice(0,endInd)
+                                let commInd = this.state.allDataArray[i].indexOf(",") // position of comma to get position of end of group name
+                                //let retInd = this.state.allDataArray[i].indexOf("\n")
+                                currentGroup = this.state.allDataArray[i].slice(0,commInd)
+                                //currentUser = this.state.allDataArray[i].slice(commInd + 1, retInd)
 
                                 if(i === 0){ // stores the first group name
                                     uniqueGroup = currentGroup
-                                    this.state.labels[labelIndex] = uniqueGroup
+                                    allGroups[labelIndex] = uniqueGroup
+                                    //uniqueUser = currentUser
                                 }
 
                                 if(currentGroup !== uniqueGroup){
+                                    allUsers[labelIndex] = userCount
                                     labelIndex = labelIndex + 1
+                                    userCount = 0
                                     uniqueGroup = currentGroup
-                                    this.state.labels[labelIndex] = uniqueGroup
+                                    allGroups[labelIndex] = uniqueGroup
                                 }
+
+                                userCount = userCount + 1
 
                             }
 
-                            console.log(this.state.labels)
+                            allUsers[labelIndex] = userCount
+
+                            this.setState({
+                                labels: allGroups
+                            });
+
+                            datasetupdate[0].data = allUsers
+
+                            this.setState({
+                                datasets: datasetupdate
+                            });
+
                         });
                     });
                 }
