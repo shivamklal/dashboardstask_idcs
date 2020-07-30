@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Pie} from 'react-chartjs-2';
+import {Bar, Pie} from 'react-chartjs-2';
 import testdata from './testdata.txt';
 
 class Basic extends Component{
@@ -8,10 +8,16 @@ class Basic extends Component{
         super(props);
         this.state = {
             labels: ["", "", ""],
-            datasets: [{
+            piedatasets: [{
                 data: [23, 36, 15],
                 backgroundColor: ['red', 'blue', 'green']
-            }]
+            }],
+            bardatasets: [{
+                data: [23,36,15],
+                backgroundColor: ['red', 'blue', 'green'],
+                borderWidth: 1, borderColor: 'black', barThickness:150
+            }],
+            barlabels: ["CatA", "CatB", "CatC"]
         }
     }
 
@@ -24,16 +30,35 @@ class Basic extends Component{
         return(
             <div>
                 <h1>Group Details Chart</h1>
+
+                <p1>Pie Representation</p1>
+
                 <Pie data={{
                     labels:this.state.labels,
-                    datasets: this.state.datasets
+                    datasets: this.state.piedatasets
+                }} height={50}
+                     onClick={() => this.pieClick({testdata})}
+                />
+
+                <br/>
+
+                <p1>Bar Representation</p1>
+                <Bar data={{
+                    labels: this.state.barlabels,
+                    datasets: this.state.bardatasets
                 }}
-                     height={50}
+                    height={75}
                 />
                 <br/>
+
             </div>
         );
     }
+
+    pieClick = (dataArray) => {
+        console.log(dataArray);
+    }
+
 
     readData = file => {
         console.log('reading data...')
@@ -55,26 +80,21 @@ class Basic extends Component{
                             let labelIndex = 0 // manages index of array of unique group names, incremented only when a new name is found
                             let uniqueGroup = ""
                             let currentGroup = ""
-                            //let uniqueUser = ""
-                            //let currentUser = ""
                             let allGroups = ["", "", ""]
                             let allUsers = [0, 0, 0]
                             let userCount = 0
                             let datasetupdate = [{
                                 data: [23, 36, 15],
-                                backgroundColor: ['red', 'blue', 'green']
+                                backgroundColor: ['red', 'blue', 'green', 'yellow']
                             }]
                             for(let i = 0; i < this.state.allDataArray.length; i++){
                                 // find the first group name
                                 let commInd = this.state.allDataArray[i].indexOf(",") // position of comma to get position of end of group name
-                                //let retInd = this.state.allDataArray[i].indexOf("\n")
                                 currentGroup = this.state.allDataArray[i].slice(0,commInd)
-                                //currentUser = this.state.allDataArray[i].slice(commInd + 1, retInd)
 
                                 if(i === 0){ // stores the first group name
                                     uniqueGroup = currentGroup
                                     allGroups[labelIndex] = uniqueGroup
-                                    //uniqueUser = currentUser
                                 }
 
                                 if(currentGroup !== uniqueGroup){
@@ -98,7 +118,7 @@ class Basic extends Component{
                             datasetupdate[0].data = allUsers
 
                             this.setState({
-                                datasets: datasetupdate
+                                piedatasets: datasetupdate
                             });
 
                         });
